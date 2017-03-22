@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
 
 public class HomePage extends Activity {
@@ -18,6 +20,22 @@ public class HomePage extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+        
+        //text edits and corresponding checkboxes
+        
+        final EditText task1 = (EditText) findViewById(R.id.editText1);
+        final EditText task2 = (EditText) findViewById(R.id.EditText2);
+        final EditText task3 = (EditText) findViewById(R.id.EditText3);
+        final EditText task4 = (EditText) findViewById(R.id.EditText4);
+        final EditText task5 = (EditText) findViewById(R.id.EditText5);
+        final EditText task6 = (EditText) findViewById(R.id.EditText6);
+        
+        final CheckBox task1check = (CheckBox) findViewById(R.id.checkBox1);
+        final CheckBox task2check = (CheckBox) findViewById(R.id.CheckBox2);
+        final CheckBox task3check = (CheckBox) findViewById(R.id.CheckBox3);
+        final CheckBox task4check = (CheckBox) findViewById(R.id.CheckBox4);
+        final CheckBox task5check = (CheckBox) findViewById(R.id.CheckBox5);
+        final CheckBox task6check = (CheckBox) findViewById(R.id.CheckBox6);
         
         
         //BUTTONS--
