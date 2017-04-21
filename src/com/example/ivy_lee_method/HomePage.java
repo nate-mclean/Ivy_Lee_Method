@@ -4,6 +4,7 @@ package com.example.ivy_lee_method;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,6 +75,60 @@ public class HomePage extends Activity {
 						return true;
 					}
 				});
+				
+				//STATE (enter tasks or check off tasks)
+				
+				//submit button
+				final Button Submit = (Button) findViewById(R.id.submitButton);
+				
+				if(Model.tasksEntered == false){
+					task1check.setVisibility(View.INVISIBLE);
+					task2check.setVisibility(View.INVISIBLE);
+					task3check.setVisibility(View.INVISIBLE);
+					task4check.setVisibility(View.INVISIBLE);
+					task5check.setVisibility(View.INVISIBLE);
+					task6check.setVisibility(View.INVISIBLE);
+					
+					Submit.setOnTouchListener(new View.OnTouchListener() {
+						@Override
+						public boolean onTouch(View v, MotionEvent event) {
+							if (event.getAction() == MotionEvent.ACTION_DOWN) {
+								
+								//set boolean true
+								Model.tasksEntered = true;
+								Submit.setVisibility(View.INVISIBLE);
+								
+								//set daily tasks, and disable text edits
+								Model.dailyTasksList.add(task1.getText().toString());
+								task1.setFocusable(false);
+								Model.dailyTasksList.add(task2.getText().toString());
+								task2.setFocusable(false);
+								Model.dailyTasksList.add(task3.getText().toString());
+								task3.setFocusable(false);
+								Model.dailyTasksList.add(task4.getText().toString());
+								task4.setFocusable(false);
+								Model.dailyTasksList.add(task5.getText().toString());
+								task5.setFocusable(false);
+								Model.dailyTasksList.add(task6.getText().toString());
+								task6.setFocusable(false);
+								
+								//enable check boxes
+								task1check.setVisibility(View.VISIBLE);
+								task2check.setVisibility(View.VISIBLE);
+								task3check.setVisibility(View.VISIBLE);
+								task4check.setVisibility(View.VISIBLE);
+								task5check.setVisibility(View.VISIBLE);
+								task6check.setVisibility(View.VISIBLE);
+								
+							}
+							return true;
+						}
+					});					
+				}
+				if(Model.tasksEntered){
+					Submit.setVisibility(View.INVISIBLE);
+
+				}
         
     }
 
