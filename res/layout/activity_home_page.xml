@@ -76,6 +76,7 @@
         android:layout_alignTop="@+id/checkBox1"
         android:layout_marginLeft="14dp"
         android:layout_toRightOf="@+id/checkBox1"
+        android:maxLines="2"
         android:ems="10" />
 
     <EditText
@@ -84,6 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/editText1"
         android:layout_alignTop="@+id/CheckBox2"
+        android:maxLines="2"
         android:ems="10" />
 
     <EditText
@@ -92,6 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/editText1"
         android:layout_alignTop="@+id/CheckBox3"
+        android:maxLines="2"
         android:ems="10" />
 
     <EditText
@@ -100,6 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/EditText2"
         android:layout_alignTop="@+id/CheckBox4"
+        android:maxLines="2"
         android:ems="10" />
 
     <EditText
@@ -108,6 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/EditText3"
         android:layout_alignTop="@+id/CheckBox5"
+        android:maxLines="2"
         android:ems="10" />
 
     <EditText
@@ -116,8 +121,18 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/EditText4"
         android:layout_alignTop="@+id/CheckBox6"
+        android:maxLines="2"
         android:ems="10" />
 
+    <TextView 
+        android:id="@+id/infoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/CheckBox6"
+        android:layout_alignLeft="@+id/EditText4"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        />
     <Button
         android:id="@+id/graphsButton"
         android:layout_width="wrap_content"
