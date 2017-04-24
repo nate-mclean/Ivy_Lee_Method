@@ -49,15 +49,10 @@
                 android:id="@+id/monthCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
+                android:layout_marginLeft="150dp"
                 android:text="Month" />
 
-            <RadioButton
-                android:id="@+id/yearCheck"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:text="Year" />
+
         </RadioGroup>
 
     </RelativeLayout>

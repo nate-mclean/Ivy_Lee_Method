@@ -18,7 +18,7 @@ public class Model {
 	
 	public static ArrayList<String> dailyTasksList = new ArrayList<String>();
 	
-	public static HashMap<Integer, Integer> graphTasksCompleted = new HashMap<Integer, Integer>();
+	public static ArrayList< Integer> graphTasksCompleted = new ArrayList<Integer>();
 	
 	
 }

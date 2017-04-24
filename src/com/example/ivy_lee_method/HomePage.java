@@ -1,6 +1,7 @@
 package com.example.ivy_lee_method;
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -37,6 +38,10 @@ public class HomePage extends Activity {
         final EditText task4 = (EditText) findViewById(R.id.EditText4);
         final EditText task5 = (EditText) findViewById(R.id.EditText5);
         final EditText task6 = (EditText) findViewById(R.id.EditText6);
+        //arraylist to store all edittext
+        ArrayList<EditText> EditTextList =  new ArrayList<EditText>();
+        EditTextList.add(task1); EditTextList.add(task2); EditTextList.add(task3); EditTextList.add(task4); EditTextList.add(task5);
+        EditTextList.add(task6); 
         
         final CheckBox task1check = (CheckBox) findViewById(R.id.checkBox1);
         final CheckBox task2check = (CheckBox) findViewById(R.id.CheckBox2);
@@ -44,38 +49,105 @@ public class HomePage extends Activity {
         final CheckBox task4check = (CheckBox) findViewById(R.id.CheckBox4);
         final CheckBox task5check = (CheckBox) findViewById(R.id.CheckBox5);
         final CheckBox task6check = (CheckBox) findViewById(R.id.CheckBox6);
+        //arraylist to store all checkBoxes
+        ArrayList<CheckBox> CheckBoxList =  new ArrayList<CheckBox>();
+        CheckBoxList.add(task1check);  CheckBoxList.add(task2check); CheckBoxList.add(task3check);
+        CheckBoxList.add(task4check); CheckBoxList.add(task5check); CheckBoxList.add(task6check);
         
       //get saved data
 		final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-	
-	//get day
+
+		//get daily tasks completed
+		try{
+		Model.dailyTasksCompleted = Integer.parseInt(pref.getString("dtc", "")); }
+		catch(NumberFormatException e){
+			Model.dailyTasksCompleted = 0;	
+		}
+		
+		//get day
 		Calendar c = Calendar.getInstance(); 
 		final int currentDay = c.get(Calendar.DAY_OF_MONTH);
 		
-		if(pref.getString("task1c", "").equals("true"))
-			task1check.setChecked(true);
-		else
-			task1check.setChecked(false);
-		if(pref.getString("task2c", "").equals("true"))
-			task2check.setChecked(true);
-		else
-			task2check.setChecked(false);
-		if(pref.getString("task3c", "").equals("true"))
-			task3check.setChecked(true);
-		else
-			task3check.setChecked(false);
-		if(pref.getString("task4c", "").equals("true"))
-			task4check.setChecked(true);
-		else
-			task4check.setChecked(false);
-		if(pref.getString("task5c", "").equals("true"))
-			task5check.setChecked(true);
-		else
-			task5check.setChecked(false);
-		if(pref.getString("task6c", "").equals("true"))
-			task6check.setChecked(true);
-		else
-			task6check.setChecked(false);
+		//get arraylist 
+		String s = pref.getString("arrayList", "");
+		Log.d("array",s);
+		try{
+		for(int i = 0; i <30 ; i++){
+			Model.graphTasksCompleted.add(Integer.parseInt(s.substring(0, s.indexOf(','))));
+			s = s.substring(s.indexOf(',')+1);
+		}
+		}
+		catch(StringIndexOutOfBoundsException e){
+			//create blank array
+			for(int i = 0; i <30 ; i++)
+				Model.graphTasksCompleted.add(0);
+			Editor editor = pref.edit();
+			editor.putString("arrayList", toText(Model.graphTasksCompleted));
+			editor.commit();
+			
+		}
+		
+		//STATE (enter tasks or check off tasks)
+		//see if its a new day
+		int storedDay=0;
+		try{
+		storedDay = Integer.parseInt(pref.getString("day", ""));
+		Log.d("storedDay",Integer.toString(storedDay));
+		Log.d("currentDay",Integer.toString(currentDay));
+		
+		} catch(NumberFormatException E){
+			
+		}
+		
+		if(storedDay == currentDay){
+			Editor editor = pref.edit();
+			editor.putString("tasksEntered", "true");
+			Model.tasksEntered=true;
+			editor.commit();
+		}
+		else if(storedDay != currentDay){
+			//update storedDay
+			//save data to phone memory					
+			Editor editor = pref.edit();
+			
+			//clear all finished tasks
+			int count = 0;
+			for(CheckBox i : CheckBoxList)
+			{
+				if(i.isChecked()){
+					i.setChecked(false);
+					EditTextList.get(count).setText("");
+					editor.putString("task"+(count+1)+"c", "false");
+					editor.commit();
+				}
+				count++;
+				
+			}
+			
+			editor.putString("tasksEntered", "false");
+			editor.putString("day", Integer.toString(currentDay));
+			
+			Model.tasksEntered=false;
+			//advance arraylist
+			Model.graphTasksCompleted.add(0, 0);
+			Model.graphTasksCompleted.remove(30);
+			editor.putString("arrayList", toText(Model.graphTasksCompleted));
+			
+			editor.commit();
+			
+			
+		}
+	
+		//check all boxes based on state1
+			int count = 1;
+		for(CheckBox i : CheckBoxList){
+			if(pref.getString("task"+count+"c", "").equals("true"))
+				i.setChecked(true);
+			else
+				i.setChecked(false);
+			count++;
+		}
+		
 		
         //check box updates
         task1check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -83,15 +155,17 @@ public class HomePage extends Activity {
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
             	Editor editor = pref.edit();
             	if(isChecked){
+    			Model.dailyTasksCompleted++;
+    			Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
 				editor.putString("task1c", "true");
-				Model.dailyTasksCompleted++;
-				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
             	}
             	else{
     				editor.putString("task1c", "false");
     				Model.dailyTasksCompleted--;
-    				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+    				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
                 	}
+            	editor.putString("dtc", Integer.toString(Model.dailyTasksCompleted));
+				editor.putString("arrayList", toText(Model.graphTasksCompleted));
             	editor.commit();
             }
         }
@@ -104,13 +178,15 @@ public class HomePage extends Activity {
             	if(isChecked){
 				editor.putString("task2c", "true");
 				Model.dailyTasksCompleted++;
-				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
             	}
             	else{
     				editor.putString("task2c", "false");
     				Model.dailyTasksCompleted--;
-    				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+    				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
                 	}
+            	editor.putString("dtc", Integer.toString(Model.dailyTasksCompleted));
+				editor.putString("arrayList", toText(Model.graphTasksCompleted));
             	editor.commit();
             }
         }
@@ -123,13 +199,15 @@ public class HomePage extends Activity {
             	if(isChecked){
 				editor.putString("task3c", "true");
 				Model.dailyTasksCompleted++;
-				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
             	}
             	else{
     				editor.putString("task3c", "false");
     				Model.dailyTasksCompleted--;
-    				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+    				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
                 	}
+            	editor.putString("dtc", Integer.toString(Model.dailyTasksCompleted));
+				editor.putString("arrayList", toText(Model.graphTasksCompleted));
             	editor.commit();
             }
         }
@@ -142,13 +220,15 @@ public class HomePage extends Activity {
             	if(isChecked){
 				editor.putString("task4c", "true");
 				Model.dailyTasksCompleted++;
-				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
             	}
             	else{
     				editor.putString("task4c", "false");
     				Model.dailyTasksCompleted--;
-    				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+    				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
                 	}
+            	editor.putString("dtc", Integer.toString(Model.dailyTasksCompleted));
+				editor.putString("arrayList", toText(Model.graphTasksCompleted));
             	editor.commit();
             }
         }
@@ -161,13 +241,15 @@ public class HomePage extends Activity {
             	if(isChecked){
 				editor.putString("task5c", "true");
 				Model.dailyTasksCompleted++;
-				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
             	}
             	else{
     				editor.putString("task5c", "false");
     				Model.dailyTasksCompleted--;
-    				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+    				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
                 	}
+            	editor.putString("dtc", Integer.toString(Model.dailyTasksCompleted));
+				editor.putString("arrayList", toText(Model.graphTasksCompleted));
             	editor.commit();
             }
         }
@@ -179,17 +261,20 @@ public class HomePage extends Activity {
             	if(isChecked){
 				editor.putString("task6c", "true");
 				Model.dailyTasksCompleted++;
-				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
             	}
             	else{
     				editor.putString("task6c", "false");
     				Model.dailyTasksCompleted--;
-    				Model.graphTasksCompleted.put(currentDay, Model.dailyTasksCompleted);
+    				Model.graphTasksCompleted.set(0, Model.dailyTasksCompleted);
                 	}
+            	editor.putString("dtc", Integer.toString(Model.dailyTasksCompleted));
+				editor.putString("arrayList", toText(Model.graphTasksCompleted));
             	editor.commit();
             }
         }
      ); 
+        
         
         
         //BUTTONS TO GO FROM PAGE TO PAGE--
@@ -229,39 +314,7 @@ public class HomePage extends Activity {
 					}
 				});
 				
-				//STATE (enter tasks or check off tasks)
-			
-				
-				//see if its a new day
-				int storedDay=0;
-				try{
-				storedDay = Integer.parseInt(pref.getString("day", ""));
-				Log.d("storedDay",Integer.toString(storedDay));
-				Log.d("currentDay",Integer.toString(currentDay));
-				
-				} catch(NumberFormatException E){
-					
-				}
-				
-				if(storedDay == currentDay){
-					Editor editor = pref.edit();
-					editor.putString("tasksEntered", "true");
-					Model.tasksEntered=true;
-					editor.commit();
-				}
-				else if(storedDay != currentDay){
-					//update storedDay
-					//save data to phone memory					
-					Editor editor = pref.edit();
-					
-					editor.putString("tasksEntered", "false");
-					editor.putString("day", Integer.toString(currentDay));
-					editor.commit();
-					Model.tasksEntered=false;
-					//set state
-					
-					
-				}
+
 				
 				//submit button
 				final Button Submit = (Button) findViewById(R.id.submitButton);
@@ -378,6 +431,14 @@ public class HomePage extends Activity {
     }
 
 
+    public String toText(ArrayList a) {
+    	
+    	String s="";
+    	for(Object o : a){
+    		s += o+",";
+    	}
+    	return s;
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

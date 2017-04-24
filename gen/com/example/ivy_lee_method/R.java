@@ -1157,15 +1157,15 @@ containing a value of this type.
         public static final int submitButton=0x7f05004c;
         public static final int submit_area=0x7f050039;
         public static final int tabMode=0x7f050002;
-        public static final int textView1=0x7f050053;
-        public static final int timePicker1=0x7f050054;
+        public static final int textView1=0x7f050052;
+        public static final int timePicker1=0x7f050053;
+        public static final int timeSubmitButton=0x7f050054;
         public static final int title=0x7f05002b;
         public static final int top_action_bar=0x7f050020;
         public static final int up=0x7f050021;
         public static final int useLogo=0x7f050003;
         public static final int weekCheck=0x7f050050;
         public static final int withText=0x7f05000c;
-        public static final int yearCheck=0x7f050052;
     }
     public static final class integer {
         /**  The maximum number of action buttons that should be permitted within
